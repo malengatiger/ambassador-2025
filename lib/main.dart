@@ -1,11 +1,14 @@
+import 'package:ambassador_app/scanner_widget.dart';
 import 'package:ambassador_app/utils/functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 import 'firebase_options.dart';
+
 late FirebaseApp firebaseApp;
 fb.User? fbAuthedUser;
+
 void main() async {
   pp('$mmx ... starting ....');
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +27,13 @@ void main() async {
     pp('$mmx fbAuthUser: ${fbAuthedUser!.uid}');
     pp("$mmx .... fbAuthUser is cool! ......  🥬🥬🥬 on to the party!! \n ${await fbAuthedUser?.getIdToken()}");
   } else {
-  pp('$mmx fbAuthUser: is null.  😈👿 Need to sign up or in. Authenticate the app!');
+    pp('$mmx fbAuthUser: is null.  😈👿 Need to sign up or in. Authenticate the app!');
   }
   runApp(const MyApp());
 }
 
 const mmx = '🐉🐉🐉 Ambassador App 🐉🐉🐉';
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -42,13 +46,27 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Ambassador App'),
+      home: QRScannerWidget(
+        onVehicleScanned: (v) {
+          pp('$mmx on car scanned: ${v.toJson()}');
+        },
+        onUserScanned: (u) {
+          pp('$mmx on user scanned: ${u.toJson()}');
+        },
+        onTicketScanned: (t) {
+          pp('$mmx on ticket scanned: ${t.toJson()}');
+        },
+        onCommuterScanned: (c) {
+          pp('$mmx on commuter scanned: ${c.toJson()}');
+        },
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -66,7 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
